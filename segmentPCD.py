@@ -148,7 +148,7 @@ class segmentPCD():
         bolt_pcd.paint_uniform_color([1,0,0])
         o3d.visualization.draw_geometries([self.scene, bolt_pcd])
         
-        bolt_pcd, _ = bolt_pcd.remove_statistical_outlier(nb_neighbors=15, std_ratio=0.5)
+        #bolt_pcd, _ = bolt_pcd.remove_statistical_outlier(nb_neighbors=15, std_ratio=0.5)
         
         return bolt_pcd
     

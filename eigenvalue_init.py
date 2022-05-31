@@ -15,7 +15,7 @@ import copy
 
 
 class align():
-    def __init__(self, grid_size, distance_threshold, iterations, mode, model, scene):
+    def __init__(self, grid_size, distance_threshold, iterations, mode, model, scene, full_scene):
         
         self.dist = distance_threshold
         self.mode = mode
@@ -40,6 +40,7 @@ class align():
         
         # get scene downsampled
         self.scene = self.scene.voxel_down_sample(grid_size)
+        self.full_scene = full_scene
         
         self.alignedCloud_left  = o3d.geometry.PointCloud()
         self.alignedCloud_right = o3d.geometry.PointCloud()
@@ -67,7 +68,6 @@ class align():
         
         #self.draw_registration_result(self.alignedCloud_left, self.model, self.H)
         #self.draw_registration_result(self.alignedCloud_right, self.model, self.H_eta)
-        self.draw_registration_result(self.model, self.alignedCloud, np.linalg.inv(self.H_out))
         
         
         self.h1 = np.eye(4)
@@ -81,6 +81,8 @@ class align():
         print(" fitness: ", self.fitness_out)
         print(" transform: ", self.h_final)
         
+        self.draw_registration_result(self.alignedCloud, self.model, self.H_out)
+        self.draw_registration_result(self.model, self.full_scene, np.linalg.inv(self.h_final))
         
     def alignment_left(self, R):
         #initialize start using eigenvalue decomp
@@ -143,17 +145,17 @@ class align():
         source_temp = copy.deepcopy(source)
         target_temp = copy.deepcopy(target)
         source_temp.paint_uniform_color([1, 0.706, 0.000])
-        target_temp.paint_uniform_color([0, 0.651, 0.929])
+        #target_temp.paint_uniform_color([0, 0.651, 0.929])
         source_temp.transform(transformation)
-        target_temp.paint_uniform_color([ 0, 0, 1])
-        source_temp.paint_uniform_color([ 0, 1, 0])
-        source.paint_uniform_color([ 1, 0, 0])
+        #target_temp.paint_uniform_color([ 0, 0, 1])
+        #source_temp.paint_uniform_color([ 0, 1, 0])
+        #source.paint_uniform_color([ 1, 0, 0])
         
-        o3d.visualization.draw_geometries([source_temp, target_temp, self.scene],
-                                          zoom=0.4459,
-                                          front=[0.9288, -0.2951, -0.2242],
-                                          lookat=[1.6784, 2.0612, 1.4451],
-                                          up=[-0.3402, -0.9189, -0.1996])
+        o3d.visualization.draw_geometries([source_temp, target_temp])
+                                          #zoom=0.4459,
+                                          #front=[0.9288, -0.2951, -0.2242],
+                                          #lookat=[1.6784, 2.0612, 1.4451],
+                                          #up=[-0.3402, -0.9189, -0.1996])
         
     
     
